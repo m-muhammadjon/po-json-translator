@@ -2,20 +2,20 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_POST
 
-from main.forms import PoFileForm
+from main.forms import FileForm
 from main.models import File
-from main.utils import generate_translated_json, generate_translated_po
+from main.tasks import generate_translated_json_task, generate_translated_po_task
 
 
 def index(request):
     files = File.objects.all().order_by("-created_at")
-    form = PoFileForm()
+    form = FileForm()
     return render(request, "main/index.html", {"form": form, "files": files})
 
 
 @require_POST
 def translate(request):
-    form = PoFileForm(request.POST, request.FILES)
+    form = FileForm(request.POST, request.FILES)
     src = request.POST.get("from_lang")
     dest = request.POST.get("to_lang")
     valid_langs = {
@@ -32,11 +32,9 @@ def translate(request):
 
     if form.is_valid():
         obj = form.save(commit=False)
-        obj.user = request.user
         obj.save()
-        if obj.type == "po":
-            print("po")
-            generate_translated_po(obj.id)
+        if file_type == "po":
+            generate_translated_po_task.delay(obj.id)
         elif obj.type == "json":
-            generate_translated_json(obj.id)
+            generate_translated_json_task.delay(obj.id)
         return redirect("main:index")

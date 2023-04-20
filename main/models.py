@@ -17,10 +17,9 @@ class File(models.Model):
     )
     attempts = models.IntegerField(default=0)
     status = models.CharField(max_length=255, default="Pending")
-    result_file = models.URLField(null=True, blank=True)
+    result_file = models.CharField(max_length=255, default="")
     from_lang = models.CharField(max_length=10, choices=LanguageChoices.choices)
     to_lang = models.CharField(max_length=10, choices=LanguageChoices.choices)
-    user = models.ForeignKey("auth.User", models.SET_NULL, null=True)
     execution_time = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
