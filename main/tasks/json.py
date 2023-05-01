@@ -1,4 +1,5 @@
 import json
+import os
 import time
 
 from asgiref.sync import async_to_sync
@@ -29,9 +30,9 @@ def translate(data, **kwargs):
             # send message to client
             layer = get_channel_layer()
             async_to_sync(layer.group_send)(
-                f'{kwargs["user_id"]}',
+                "ws",
                 {
-                    "type": "po_process",
+                    "type": "process",
                     "percentage": f"{(current_cnt / total_cnt) * 100}",
                     "cnt": current_cnt,
                     "id": file_id,
@@ -81,9 +82,9 @@ def translate(data, **kwargs):
             # send message to client
             layer = get_channel_layer()
             async_to_sync(layer.group_send)(
-                f'{kwargs["user_id"]}',
+                "ws",
                 {
-                    "type": "po_process",
+                    "type": "process",
                     "percentage": f"{(current_cnt / total_cnt) * 100}",
                     "cnt": current_cnt,
                     "id": file_id,
@@ -129,6 +130,7 @@ def get_total_item_count_json(data, cnt):
 @shared_task(autoretry_for=(Exception,), retry_kwargs={"max_retries": 4, "countdown": 5 * 60}, timeout=7200)
 def generate_translated_json_task(obj_id):
     start = time.time()
+    os.makedirs("media/translates", exist_ok=True)  # create directory if not exists
     obj = File.objects.get(id=obj_id)
     obj.attempts += 1
     obj.status = "Processing"
@@ -140,7 +142,7 @@ def generate_translated_json_task(obj_id):
         layer = get_channel_layer()
         async_to_sync(layer.group_send)(
             "ws",
-            {"type": "po_process", "status": "Failed", "id": obj_id, "file_link": "", "gen_time": "0.0"},
+            {"type": "process", "status": "Failed", "id": obj_id, "file_link": "", "gen_time": "0.0"},
         )
         return
 
@@ -158,7 +160,6 @@ def generate_translated_json_task(obj_id):
         src=src,
         dest=dest,
         file_id=obj_id,
-        user_id=obj.user.id,
         lang_from=obj.get_from_lang_display(),
         lang_to=obj.get_to_lang_display(),
         created=str(obj.created_at),
@@ -166,10 +167,10 @@ def generate_translated_json_task(obj_id):
 
     result = data
     end = time.time()
-    path = f"{settings.MEDIA_ROOT}/translates/{obj.to_lang}_{obj.id}.json"  # location to save translated json file
+    path = f"media/translates/{obj.to_lang}_{obj.id}.json"  # location to save translated json file
     with open(path, "w") as f:
         json.dump(result, f, ensure_ascii=False)  # write to file
-    obj.result_file = f"{settings.HOST}/media/translates/{obj.to_lang}_{obj.id}.json"
+    obj.result_file = path
     obj.execution_time = end - start
     obj.status = "Completed"
     obj.save()
@@ -177,9 +178,9 @@ def generate_translated_json_task(obj_id):
     # send message to client
     layer = get_channel_layer()
     async_to_sync(layer.group_send)(
-        f"{obj.user.id}",
+        "ws",
         {
-            "type": "po_process",
+            "type": "process",
             "status": "Completed",
             "id": obj_id,
             "file_link": f"{settings.HOST}/media/translates/{obj.to_lang}_{obj.id}.json",

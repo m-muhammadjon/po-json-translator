@@ -10,11 +10,17 @@ class LanguageChoices(models.TextChoices):
     kaa = ("kaa", "Karakalpak")
 
 
+class FileTypeChoices(models.TextChoices):
+    po = ("po", "Po")
+    json = ("json", "Json")
+
+
 class File(models.Model):
     file = models.FileField(
         upload_to="files",
         validators=[FileExtensionValidator(allowed_extensions=["po", "json"])],
     )
+    type = models.CharField(max_length=255, choices=FileTypeChoices.choices)
     attempts = models.IntegerField(default=0)
     status = models.CharField(max_length=255, default="Pending")
     result_file = models.CharField(max_length=255, default="")
