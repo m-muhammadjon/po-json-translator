@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import time
 
@@ -171,7 +172,7 @@ def generate_translated_json_task(obj_id):
     with open(path, "w") as f:
         json.dump(result, f, ensure_ascii=False)  # write to file
     obj.result_file = path
-    obj.execution_time = end - start
+    obj.execution_time = math.ceil(end - start)
     obj.status = "Completed"
     obj.save()
 

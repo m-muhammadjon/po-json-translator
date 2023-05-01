@@ -76,13 +76,13 @@
                         </thead>
                         <tbody>
                         {% for file in files %}
-                            <tr id="po-{{ file.id }}">
+                            <tr id="file-{{ file.id }}">
                                 <th scope="row">{{ file.id }}</th>
                                 <td>{{ file.get_type_display }}</td>
                                 <td>{{ file.get_from_lang_display }}</td>
                                 <td>{{ file.get_to_lang_display }}</td>
                                 <td class="status {% if file.status == 'Completed' %}text-success{% elif file.status == 'Processing' %}text-secondary{% elif file.status == 'Failed' %}text-danger{% endif %}">{{ file.status }}</td>
-                                <td class="gen-time">{{ file.execution_time }}</td>
+                                <td class="gen-time">{{ file.execution_time }} seconds</td>
                                 <td>{{ file.created_at }}</td>
                                 <td class="result-file">{% if file.result_file %}
                                     <a href="{{ file.result_file }}">Download</a>{% endif %}

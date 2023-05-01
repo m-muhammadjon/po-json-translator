@@ -1,4 +1,5 @@
 import concurrent.futures
+import math
 import os
 import time
 
@@ -104,7 +105,7 @@ def generate_translated_po_task(obj_id):
     with open(path, "w") as f:
         f.write(result)  # write to file
     obj.result_file = path
-    obj.execution_time = end - start
+    obj.execution_time = math.ceil(end - start)
     obj.status = "Completed"
     obj.save()
 

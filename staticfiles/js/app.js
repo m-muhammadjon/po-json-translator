@@ -3,7 +3,7 @@ const poSocket = new WebSocket(`ws://${window.location.host}/ws/`);
     // display the process status
     poSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        let tr_id = `po-${data["id"]}`;
+        let tr_id = `file-${data["id"]}`;
         if (document.querySelector(`tr#${tr_id}`) == null)  {
               location.reload();
         } else {

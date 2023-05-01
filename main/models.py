@@ -26,7 +26,7 @@ class File(models.Model):
     result_file = models.CharField(max_length=255, default="")
     from_lang = models.CharField(max_length=10, choices=LanguageChoices.choices)
     to_lang = models.CharField(max_length=10, choices=LanguageChoices.choices)
-    execution_time = models.FloatField(default=0)
+    execution_time = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
