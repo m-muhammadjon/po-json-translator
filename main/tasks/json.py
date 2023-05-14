@@ -108,7 +108,7 @@ def translate(data, **kwargs):
                 elif src == "kaa" and dest == "uz":
                     data[key] = karakalpak.translate_to_uzbek_latin(value)
                 elif src == "kaa" and dest == "cry":
-                    data[key] = karakalpak.translate_to_uzbek_cryillic(value)
+                    data[key] = karakalpak.translate_karakalpak_to_uzbek_cryillic(value)
                 else:
                     translator = Translator()
                     content = value
