@@ -1,0 +1,18 @@
+{
+  "hello": "Salom",
+  "world": "Dunyo",
+  "months": [
+    "Yanvar",
+    "Fevral",
+    "Mart"
+  ],
+  "days": [
+    "Dushanba",
+    "Seshanba",
+    "Chorshanba"
+  ],
+  "main": {
+    "title": "Salom Dunyo",
+    "content": "Bu birinchi dars"
+  }
+}
