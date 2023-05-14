@@ -11,6 +11,8 @@ Portable Object (PO) formatidir, bu format ommabop gettext kutubxonasi tomonidan
 orasida JSON keng tarqalgan web dasturlarda ishlatiladi. Ushbu loyiha aynan po va json fayllarini tarjima qilib berishga
 mo'ljallangan.
 
+![gif](md_files/po.gif)
+
 Maqsadi
 -
 Ushbu loyiha yordamida siz po va json fayllarini tezda tarjima qilingan holatga o'tkazishingiz mumkin. Tarjima
